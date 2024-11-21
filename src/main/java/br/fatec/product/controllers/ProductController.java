@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.fatec.product.dtos.ProductResponse;
 import br.fatec.product.entities.Product;
 import br.fatec.product.services.ProductService;
 
@@ -25,7 +26,7 @@ public class ProductController {
     private ProductService service;
 
     @GetMapping
-    public ResponseEntity<List<Product>> getAllProducts(){
+    public ResponseEntity<List<ProductResponse>> getAllProducts(){
         return ResponseEntity.ok(service.getAllProducts());
     }
     @GetMapping("{id}")
@@ -45,7 +46,7 @@ public class ProductController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("{id}")
+    @PostMapping()
     public ResponseEntity<Product> saveProduct(@RequestBody Product product){
         Product newProduct = service.save(product);
         return ResponseEntity.created(null).body(newProduct);
