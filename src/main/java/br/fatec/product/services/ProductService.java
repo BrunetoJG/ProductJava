@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.fatec.product.dtos.ProductRequest;
 import br.fatec.product.dtos.ProductResponse;
 import br.fatec.product.entities.Product;
 import br.fatec.product.mappers.ProductMapper;
@@ -21,10 +22,11 @@ private ProductRepository repository;
     public List<ProductResponse> getAllProducts() {
         return repository.findAll().stream().map(p -> ProductMapper.toDTO(p)).collect(Collectors.toList());
     }
-    public Product getProductById(long id) {
-        return repository.findById(id).orElseThrow(
+    public ProductResponse getProductById(long id) {
+        Product product = repository.findById(id).orElseThrow(
             () -> new EntityNotFoundException("Produto nao cadastrado")
         );
+        return ProductMapper.toDTO(product);
 }
 
 public void delete(long id){
@@ -36,16 +38,17 @@ public void delete(long id){
     }
 }
 
-    public Product save(Product product){
-      return repository.save(product);  
+    public ProductResponse save(ProductRequest product){
+      Product newProduct = repository.save(ProductMapper.toEntity(product));
+      return ProductMapper.toDTO(newProduct);  
     }
 
-    public void update(Product product, long id){
+    public void update(ProductRequest product, long id){
        Product aux = repository.getReferenceById(id);
 
-       aux.setCategory(product.getCategory());
-       aux.setName(product.getName());
-       aux.setPrice(product.getPrice());
+       aux.setCategory(product.category());
+       aux.setName(product.name());
+       aux.setPrice(product.price());
 
        repository.save(aux);
     }
